@@ -19,7 +19,7 @@ const EditBlog = () => {
       }
 
       try {
-        const res = await axios.get(`http://localhost:5000/api/blogs/${id}`, {
+        const res = await axios.get(`https://blogsphere-6q19.onrender.com/api/blogs/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBlog(res.data);
@@ -47,7 +47,7 @@ const EditBlog = () => {
     }
 
     try {
-      await axios.put(`http://localhost:5000/api/blogs/${id}`, blog, {
+      await axios.put(`https://blogsphere-6q19.onrender.com/api/blogs/${id}`, blog, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

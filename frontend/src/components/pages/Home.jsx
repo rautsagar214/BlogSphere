@@ -32,7 +32,7 @@ const Home = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.get("http://localhost:5000/api/blogs", {
+      const res = await axios.get("https://blogsphere-6q19.onrender.com/api/blogs", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBlogs(res.data);
@@ -69,7 +69,7 @@ const Home = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:5000/api/blogs/${id}`, {
+      await axios.delete(`https://blogsphere-6q19.onrender.com/api/blogs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

@@ -12,7 +12,7 @@ const Signup = () => {
     setError("");
 
     try {
-      await axios.post("http://localhost:5000/signup", form);
+      await axios.post("https://blogsphere-6q19.onrender.com/signup", form);
       alert("Signup Successful! Redirecting to login...");
       navigate("/login"); // Redirect to login page
     } catch (err) {

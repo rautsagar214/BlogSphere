@@ -12,7 +12,7 @@ const Login = () => {
     setError("");
 
     try {
-      const { data } = await axios.post("http://localhost:5000/login", form);
+      const { data } = await axios.post("https://blogsphere-6q19.onrender.com/login", form);
       localStorage.setItem("token", data.token);
       localStorage.setItem("userId", data.userId);
       navigate("/");

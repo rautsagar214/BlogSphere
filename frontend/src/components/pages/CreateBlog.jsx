@@ -44,7 +44,7 @@ const CreateBlog = () => {
       formData.append("author", author);
       
       console.log(formData)
-      await axios.post("http://localhost:5000/api/blogs/create", {...form, author}, {
+      await axios.post("https://blogsphere-6q19.onrender.com/api/blogs/create", {...form, author}, {
         headers: { 
           Authorization: `Bearer ${token}`
         },
