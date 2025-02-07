@@ -53,6 +53,7 @@ const Navbar = () => {
 
   const navItems = [
     { name: "Home", path: "/", icon: <HomeIcon className="mr-2" size={20} /> },
+    { name: "MyBlogs", path: "/myblogs", icon: <HomeIcon className="mr-2" size={20} /> },
   ];
 
   return (

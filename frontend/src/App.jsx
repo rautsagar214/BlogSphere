@@ -6,6 +6,7 @@ import Login from "./components/pages/Login";
 import CreateBlog from "./components/pages/CreateBlog";
 import BlogDetail from "./components/pages/BlogDetail";
 import EditBlog from "./components/pages/EditBlog";
+import MyBlogs from "./components/pages/MyBlogs"
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/create" element={<CreateBlog />} />
                 <Route path="/blog/:id" element={<BlogDetail />} />
                <Route path="/edit-blog/:id" element={<EditBlog />} />
+               <Route path="/myblogs" element={<MyBlogs/>} />
 
             </Routes>
         </Router>

@@ -20,7 +20,7 @@ const Home = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch blogs from the server
+  // Fetch all blogs from the server
   const fetchBlogs = async () => {
     const token = localStorage.getItem("token");
 
@@ -35,71 +35,19 @@ const Home = () => {
       const res = await axios.get("https://blogsphere-6q19.onrender.com/api/blogs", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setBlogs(res.data);
+      setBlogs(res.data); // Display all blogs, without filtering by user
     } catch (err) {
       console.error("Error fetching blogs:", err.response?.data || err.message);
-      
-      if (err.response?.status === 403 || err.response?.status === 401) {
-        // Token expired or unauthorized
-        localStorage.removeItem("token");
-        navigate("/login", { 
-          state: { 
-            message: "Your session has expired. Please log in again." 
-          } 
-        });
-      } else {
-        // Set a generic error message
-        setError("Failed to fetch blogs. Please try again later.");
-      }
+      setError("Failed to fetch blogs. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Delete blog handler
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
-    if (!confirmDelete) return;
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    try {
-      await axios.delete(`https://blogsphere-6q19.onrender.com/api/blogs/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      // Optimistically remove the blog from the list
-      setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== id));
-      
-      // Optional: Show a success toast or notification
-      alert("Blog deleted successfully!");
-    } catch (err) {
-      console.error("Error deleting blog:", err.response?.data || err.message);
-      
-      if (err.response?.status === 403 || err.response?.status === 401) {
-        localStorage.removeItem("token");
-        navigate("/login", { 
-          state: { 
-            message: "Your session has expired. Please log in again." 
-          } 
-        });
-      } else {
-        alert("Failed to delete the blog. Please try again.");
-      }
-    }
-  };
-
-  // Fetch blogs on component mount
   useEffect(() => {
     fetchBlogs();
   }, [navigate]);
 
-  // Loading State Component
   const LoadingState = () => (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -191,9 +139,10 @@ const Home = () => {
     </motion.div>
   );
 
-  // Render Blogs List
+
+  // Render Blogs List (without edit and delete buttons)
   const BlogsList = () => (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -205,84 +154,65 @@ const Home = () => {
           animate={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.3 }}
-          className="bg-white rounded-3xl overflow-hidden shadow-xl border-2 border-transparent hover:border-purple-300 transition-all duration-300 relative group"
+          className="bg-white rounded-3xl overflow-hidden shadow-xl border-2 border-transparent hover:border-purple-300 transition-all duration-300 relative"
         >
           <div className="p-6 relative">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-indigo-50 opacity-50 -z-10"></div>
-            
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-2xl font-bold text-gray-900 flex-grow pr-4">
                 {blog.title}
               </h3>
-              <Calendar 
-                className="text-purple-500 flex-shrink-0" 
-                size={24} 
-              />
+              <Calendar className="text-purple-500 flex-shrink-0" size={24} />
             </div>
-            
             <p className="text-gray-600 mb-6 line-clamp-3">
               {blog.content}
             </p>
-            
-            <div className="flex space-x-3">
-              {[
-                { 
-                  icon: Book, 
-                  text: 'Read', 
-                  color: 'purple', 
-                  action: () => navigate(`/blog/${blog._id}`)
-                },
-                { 
-                  icon: Edit, 
-                  text: 'Edit', 
-                  color: 'yellow', 
-                  action: () => navigate(`/edit-blog/${blog._id}`)
-                },
-                { 
-                  icon: Trash2, 
-                  text: 'Delete', 
-                  color: 'red', 
-                  action: () => handleDelete(blog._id)
-                }
-              ].map((item) => (
-                <motion.button
-                  key={item.text}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={item.action}
-                  className={`
-                    flex items-center 
-                    bg-${item.color}-100 
-                    text-${item.color}-700 
-                    px-4 py-2 
-                    rounded-lg 
-                    hover:bg-${item.color}-200 
-                    transition 
-                    group
-                  `}
-                >
-                  <item.icon className="mr-2 group-hover:rotate-6 transition" size={20} />
-                  {item.text}
-                </motion.button>
-              ))}
-            </div>
+              <div className="flex space-x-3">
+                        {[
+                          { 
+                            icon: Book, 
+                            text: 'Read', 
+                            color: 'purple', 
+                            action: () => navigate(`/blog/${blog._id}`)
+                          }
+                        ].map((item) => (
+                          <motion.button
+                            key={item.text}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={item.action}
+                            className={`
+                              flex items-center 
+                              bg-${item.color}-100 
+                              text-${item.color}-700 
+                              px-4 py-2 
+                              rounded-lg 
+                              hover:bg-${item.color}-200 
+                              transition 
+                              group
+                            `}
+                          >
+                            <item.icon className="mr-2 group-hover:rotate-6 transition" size={20} />
+                            {item.text}
+                          </motion.button>
+                        ))}
+                      </div>
           </div>
         </motion.div>
       ))}
     </motion.div>
   );
 
-  // Main Render
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="max-w-7xl mx-auto"
       >
         <div className="text-center mb-12">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -290,11 +220,11 @@ const Home = () => {
           >
             Your Digital Storytelling Hub
           </motion.h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto m-2" >
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto m-2">
             Capture, Create, and Share Your Thoughts. Your Personal Blog Sanctuary Awaits.
-             </p>
-          
-          <motion.div
+          </p>
+
+           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -311,7 +241,11 @@ const Home = () => {
               <ChevronRight className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
             </Link>
           </motion.div>
+
         </div>
+
+
+
 
         <AnimatePresence>
           {loading ? (
